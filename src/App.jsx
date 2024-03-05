@@ -3,23 +3,52 @@ import "./App.css";
 import WeatherCard from "./components/WeatherCard";
 import axios from "axios";
 import Loading from "./components/Loading";
+import FormWeatherCard from "./components/FormWeatherCard";
 
 function App() {
   const [coords, setCoords] = useState();
   const [weather, setWeather] = useState();
   const [temp, setTemp] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [city, setCity] = useState();
 
-  const success = (position) => {
+  // 1) Get latitue & longitude using geolocation API and save in the coords state
+  const success = (info) => {
     setCoords({
-      lat: position.coords.latitude,
-      lon: position.coords.longitude,
+      lat: info.coords.latitude,
+      lon: info.coords.longitude,
+    });
+  };
+  const error = (err) => {
+    setCoords({
+      lat: 40.73061,
+      lon: -73.935242,
     });
   };
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(success);
+    navigator.geolocation.getCurrentPosition(success, error);
   }, []);
 
+  useEffect(() => {
+    if (city) {
+      const url = `https://api.api-ninjas.com/v1/city?name=${city}`;
+      axios
+        .get(url, {
+          headers: { "X-Api-Key": "xYtGACsXqouwgpQnsCiV0A==oFAGRKqZAnMkq1WE" },
+          contentType: "application/json",
+        })
+        .then((res) => {
+          console.log(res.data);
+          setCoords({
+            lat: res.data[0].latitude,
+            lon: res.data[0].longitude,
+          });
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [city]);
+
+  // 2) Use the before resource to get the weather by an axios petition and save in the weather state
   useEffect(() => {
     if (coords) {
       const APIKEY = "229be110990b431587e01a6899f2e98c";
@@ -43,9 +72,12 @@ function App() {
     }
   }, [coords]);
 
+  // 3) temp state was made to save the conversion temperature in celcious and fahrenheit.
+  // 4) isLoading state was made to don't show my card befere complete the charge.
   return (
     <div className="app">
       {isLoading ? <Loading /> : <WeatherCard weather={weather} temp={temp} />}
+      <FormWeatherCard setCity={setCity} />
     </div>
   );
 }
