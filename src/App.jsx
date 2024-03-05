@@ -77,7 +77,7 @@ function App() {
   return (
     <div className="app">
       {isLoading ? <Loading /> : <WeatherCard weather={weather} temp={temp} />}
-      <FormWeatherCard setCity={setCity} />
+      {isLoading ? "" : <FormWeatherCard setCity={setCity} />}
     </div>
   );
 }
