@@ -20,9 +20,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  top: 20px;
   .weather__title {
     font-size: 2rem;
     text-align: center;
+    text-shadow: 2px 2px 3px #000;
   }
 }
 .weather__resource {
@@ -37,7 +40,7 @@
   flex-direction: column;
   justify-content: space-evenly;
   .weather__description {
-    font-size: 1.2em;
+    font-size: 1.3em;
   }
   .weather__list {
     position: relative;
